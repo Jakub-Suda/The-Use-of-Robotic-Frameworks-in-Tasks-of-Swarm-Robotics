@@ -1,2 +1,3 @@
-# The-Use-of-Robotic-Frameworks-in-Tasks-of-Swarm-Robotics
-This repository contains sources, more detailed information on the "The Use of Robotic Frameworks in Tasks of Swarm Robotics" project
+# The Use of Robotic Frameworks in Tasks of Swarm Robotics
+
+This repository accompanies the paper "The Use of Robotic Frameworks in Tasks of Swarm Robotics." It contains additional informations of this project
