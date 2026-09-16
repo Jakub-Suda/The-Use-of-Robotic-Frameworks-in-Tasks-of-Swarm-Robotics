@@ -13,6 +13,9 @@ This project addresses that gap with a low-cost, custom-built ESP32 UAV platform
 The platform is built on a low-cost ESP32 drone base, chosen over more established indoor research platforms (such as the Crazyflie) to keep per-unit cost low enough for swarm-scale experimentation. It was substantially modified to support indoor flight: beyond the stock MPU-6050 IMU (gyroscope + accelerometer), it adds a **PMW3901 optical-flow sensor** for horizontal velocity estimation and position-holding, and a **VL53L1X Time-of-Flight sensor** for altitude measurement, compensating for the absence of reliable GNSS indoors.
 
 ![UAV platform](figures/UAV_platform.png)
+
+The ToF and optical-flow sensors are mounted using a custom **3D-printed housing** attached to the base quadcopter frame. While this made sensor integration straightforward and repeatable across units, the added weight of the housing and sensors together consumed a significant share of the micro-motors' available thrust margin, one of the factors limiting stable position-holding described in the Key Results below.
+
 ![Drone housing](figures/drone_housing.png)
 
 ## Firmware
@@ -28,6 +31,10 @@ The firmware is organised into modular components: a Sensor Data Collector aggre
 The GCS is a Python framework run on a dedicated control computer that provides three main functions: network scanning and UAV discovery via a parallelised ICMP ping sweep across the Wi-Fi subnet; real-time telemetry and state management through an asynchronous UDP dispatcher that decodes binary telemetry, maintains a unified global state, visualises it live, and logs it for post-flight analysis; and swarm coordination through a displacement-based spatial model that translates each UAV's local sensor frame into a shared global coordinate frame to compute the movement commands needed for group behaviours such as splitting, merging, and coordinated motion. A path-deconfliction procedure also checks each UAV's intended trajectory against others at similar altitude before committing to a move, to avoid mid-air conflicts.
 
 ![Framework architecture](figures/framework_architecture.png)
+
+Real-time telemetry is handled by an asynchronous UDP dispatcher running inside the GCS, so that incoming data streams from multiple UAVs are processed without blocking one another. Each UAV transmits its current state (attitude, position estimate, and battery status) as a binary UDP payload; the GCS decodes these payloads using Python's `struct` library and merges them into the same unified global state referenced above. This state is visualised live using `matplotlib` and simultaneously logged to disk (CSV) for post-flight analysis. In testing, this pipeline sustained stable packet intervals of 7.76–9.82 ms with zero dropped packets for up to four physical UAVs transmitting at 100 Hz, while UAV discovery via ICMP ping sweep reached 100% reliability for one or two UAVs, dropping to 93.34% for three or four due to timeout congestion — an early sign of the same communication-layer bottleneck that later limits scalability at 32–64 simulated UAVs.
+
+
 ![Telemetry module](figures/telemetry_module.png)
 
 ## Simulation Model
