@@ -1,4 +1,3 @@
-
 # The Use of Robotic Frameworks in Tasks of Swarm Robotics
 
 This repository accompanies the paper *"The Use of Robotic Frameworks in Tasks of Swarm Robotics"* by Ing. Jakub Suďa and doc. Dr. Ing. Ján Vaščák (Technical University of Košice). It contains supplementary material, figures, and source code for a low-cost indoor UAV platform and centralised ground-control framework developed for aerial swarm coordination.
